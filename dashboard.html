@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | My Photography Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-body">
+  <header>
+    <nav>
+      <h1 class="logo">My Portfolio</h1>
+      <ul>
+        <li><a href="index.html">View Site</a></li>
+        <li><a href="javascript:void(0)" id="logout">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="upload-section">
+      <h2>Upload New Photo</h2>
+      <form id="upload-form">
+        <input type="file" id="photo-input" accept="image/*" required>
+        <textarea id="photo-desc" placeholder="Write something about this photo…" rows="3"></textarea>
+        <button type="submit">Add to Gallery</button>
+      </form>
+    </section>
+
+    <section class="admin-gallery">
+      <h2>Your Uploaded Photos</h2>
+      <div id="admin-gallery-grid"></div>
+    </section>
+  </main>
+
+  <script>
+    // protect dashboard
+    if (sessionStorage.getItem('loggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    const uploadForm = document.getElementById('upload-form');
+    const photoInput = document.getElementById('photo-input');
+    const photoDesc = document.getElementById('photo-desc');
+    const galleryGrid = document.getElementById('admin-gallery-grid');
+
+    // Load existing photos from localStorage
+    function loadPhotos() {
+      const photos = JSON.parse(localStorage.getItem('photos')) || [];
+      galleryGrid.innerHTML = '';
+      photos.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'photo-item';
+        div.innerHTML = `
+          <img src="${item.src}" alt="Photo ${index}">
+          <p>${item.desc}</p>
+        `;
+        galleryGrid.appendChild(div);
+      });
+    }
+
+    uploadForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const file = photoInput.files[0];
+      const desc = photoDesc.value.trim();
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const photos = JSON.parse(localStorage.getItem('photos')) || [];
+        photos.push({ src: reader.result, desc });
+        localStorage.setItem('photos', JSON.stringify(photos));
+        loadPhotos();
+        uploadForm.reset();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('logout').addEventListener('click', function () {
+      sessionStorage.removeItem('loggedIn');
+      window.location.href = 'index.html';
+    });
+
+    // Initialize gallery on page load
+    loadPhotos();
+  </script>
+</body>
+</html>
