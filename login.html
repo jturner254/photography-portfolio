@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | My Photography Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <h2>Admin Login</h2>
+    <form id="login-form">
+      <label for="username">Username</label>
+      <input type="text" id="username" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" required>
+      <button type="submit">Log In</button>
+    </form>
+    <p id="login-error" class="error-msg"></p>
+  </div>
+  <script>
+    // Simple login check (demo only)
+    const form = document.getElementById('login-form');
+    const errorElem = document.getElementById('login-error');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      // replace 'admin'/'password' with your credentials or integrate with Firebase
+      if (user === 'admin' && pass === 'password') {
+        sessionStorage.setItem('loggedIn', 'true');
+        window.location.href = 'dashboard.html';
+      } else {
+        errorElem.textContent = 'Invalid credentials. Try again.';
+      }
+    });
+  </script>
+</body>
+</html>
